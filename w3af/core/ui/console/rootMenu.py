@@ -20,6 +20,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 """
 import sys
+import os
 import time
 import select
 
@@ -161,6 +162,11 @@ class rootMenu(menu):
         """
         When the user hits enter, show the progress
         """
+        if not os.isatty(sys.stdin.fileno()):
+            while self._w3af.status.is_running() or self._w3af.status.is_paused():
+                pass
+            return
+
         term.set_raw_input_mode(True)
 
         handlers = {'P': self._pause_scan,
